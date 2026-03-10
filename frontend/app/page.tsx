@@ -16,6 +16,7 @@ export default function Home() {
   // Для модалки та редагування
   const [selectedSnippet, setSelectedSnippet] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
   useEffect(() => {
     setMounted(true);
@@ -24,7 +25,7 @@ export default function Home() {
 
   const fetchSnippets = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3001/snippets", {
+      const { data } = await axios.get(`${API_URL}/snippets`, {
         params: { q: search },
       });
       setSnippets(data.data || data);
@@ -43,7 +44,7 @@ export default function Home() {
       .filter((tag) => tag !== "");
 
     try {
-      await axios.post("http://localhost:3001/snippets", {
+      await axios.post(`${API_URL}/snippets`, {
         title: title,
         content: content,
         type: "note",
@@ -65,7 +66,7 @@ export default function Home() {
     if (e) e.stopPropagation(); // Щоб не відкривалася модалка при кліку на кошик
     if (!confirm("Видалити цей запис?")) return;
     try {
-      await axios.delete(`http://localhost:3001/snippets/${id}`);
+      await axios.delete(`${API_URL}/snippets/${id}`);
       setSelectedSnippet(null);
       fetchSnippets();
     } catch (error) {
